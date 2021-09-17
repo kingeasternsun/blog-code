@@ -1,0 +1,5 @@
+comment = 'my_agg:  Created by pgx'
+default_version = '1.0'
+module_pathname = '$libdir/my_agg'
+relocatable = false
+superuser = false

@@ -1,0 +1,5 @@
+comment = 'my_schema:  Created by pgx'
+default_version = '1.0'
+module_pathname = '$libdir/my_schema'
+relocatable = false
+superuser = false
