@@ -1,0 +1,56 @@
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	mpsc()
+}
+
+type Msg struct {
+	in int
+}
+
+// 生产者
+func producer(sendChan chan Msg, wg *sync.WaitGroup) {
+	for i := 0; i < 10; i++ {
+		sendChan <- Msg{in: i}
+	}
+
+	wg.Done()
+}
+
+// 消费者
+func consumer(sendChan chan Msg) {
+	for v := range sendChan {
+		process(v)
+	}
+}
+
+// 消息处理函数
+func process(msg Msg) {
+	fmt.Println(msg)
+}
+
+func mpsc() {
+
+	// 生产者个数
+	pNum := 3
+	sendChan := make(chan Msg, 10)
+
+	wg := sync.WaitGroup{}
+	wg.Add(pNum)
+	for p := 0; p < pNum; p++ {
+		go producer(sendChan, &wg)
+	}
+
+	// 等待生产者都完成后关闭 sendChan 通知到 消费者
+	go func() {
+		wg.Wait()
+		close(sendChan)
+	}()
+
+	consumer(sendChan)
+}
